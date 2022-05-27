@@ -6,7 +6,7 @@ import './upgERC20.sol';
 
 contract EnergiToken is Initializable, upgERC20 {
 
-    address public owner;
+    address private owner;
     function initialize(
         address _owner,
         string calldata _name,
@@ -18,16 +18,21 @@ contract EnergiToken is Initializable, upgERC20 {
         require(_owner != address(0));
         owner = _owner;
     }
+    
+    modifier onlyOwner() {
+        require(owner == msg.sender, "caller is not the owner");
+        _;
+    }
 
-    function changeOwner(address _owner) external {
+    function changeOwner(address _owner) external onlyOwner{
         owner = _owner;
     }
 
-    function mint(address recipient, uint amount) external {
+    function mint(address recipient, uint amount) external onlyOwner{
         _mint(recipient, amount);
     }
 
-    function burn(address recipient, uint amount) external {
+    function burn(address recipient, uint amount) external onlyOwner{
         _burn(recipient, amount);
     }
  
